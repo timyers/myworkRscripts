@@ -1,2 +1,2 @@
 # myworkRscripts
-A repository for work related R scripts
+A repository for my work related R scripts.
