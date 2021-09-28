@@ -1,0 +1,22 @@
+# This short script will accept rsids as input and output genomic coordinates.
+
+# Install from Bioconductor
+remotes::install_bioc("biomaRt")
+
+# load the library
+library(biomaRt)
+
+# Select BioMart database to use
+snp_mart <- useEnsembl(biomart = "snps", dataset = "hsapiens_snp", GRCh = "37")
+
+# Query snps (rsids)
+snp_ids <- c("rs3", "rs4")
+
+# List of attributes
+snp_attributes <- c("refsnp_id", "chr_name", "chrom_start", "chrom_end")
+
+# Retrieve genomic positions
+snp_positions <- getBM(attributes = snp_attributes, filters="snp_filter", 
+                      values=snp_ids, mart=snp_mart)
+
+snp_positions
