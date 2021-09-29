@@ -1,0 +1,375 @@
+LDlinkR::LDhap
+# Funtion call examples
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDhapR/data_saved/capture_text1.txt"
+
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"), myfile)                  # good, save file
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"), 2345.txt)                # bad, file option rejected by R
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"), "capture_text2.txt")     # good, save file
+
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"))                          # good
+LDhap("rs3", "YRI", Sys.getenv("LDLINK_TOKEN"))                                                   # good, only one SNP provided
+LDhap(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), Sys.getenv("LDLINK_TOKEN"))                # good, multiple populations
+LDhap(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "faketoken")                   # bad, fake token
+LDhap(c("r3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"))                           # bad query SNP format
+LDhap("YRI", Sys.getenv("LDLINK_TOKEN"))                                                          # bad, no SNP provided
+LDhap(c("rs3", "chr13:32447222"), "YRI",Sys.getenv("LDLINK_TOKEN"))                               # good, rsID and coordinates provided
+LDhap(c("rs3", "chr13;32447222"), "YRI",Sys.getenv("LDLINK_TOKEN"))                               # bad, correct rsID but bad coordinate using semi-colon
+LDhap(c("rs3", "Chr13:32447222"), "YRI",Sys.getenv("LDLINK_TOKEN"))                               # good, rsID and coordinates provided
+
+## New update to add new argument choices for output						          
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", table_type="haplo", Sys.getenv("LDLINK_TOKEN"))      # good, with new 'table_type' arg haplo
+LDhap(c("rs3", "rs4", "rs148890987"), "CEU", table_type="variant", Sys.getenv("LDLINK_TOKEN"))    # good, with new 'table_type' arg variant
+LDhap(c("rs3", "rs4"), "CEU", "haplo", Sys.getenv("LDLINK_TOKEN"))                                # good, two variants with haplo arg
+LDhap(c("rs3", "rs4"), "CEU", "variant", Sys.getenv("LDLINK_TOKEN"))                              # good, two variants with variant arg
+
+##########################################################################################
+
+LDlinkR::LDmatrix
+# Funtion call, good and bad examples
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDmatrixR/data_saved/capture_text1.txt"
+
+
+LDmatrix(c("rs3", "rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), myfile)                 # good, w/ save file option
+LDmatrix(c("rs3", "rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), "capture4.txt")
+
+LDmatrix(c("rs3", "rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))                         # good
+LDmatrix("rs3", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))                                                  # bad, only one SNP provided
+LDmatrix(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "r2", Sys.getenv("LDLINK_TOKEN"))               # good, multiple populations
+LDmatrix(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "r2", "faketoken")                  # bad, fake token with multiple populations
+LDmatrix(c("rs3", "rs4", "rs148890987"), "CEU", "r2", "faketoken")                            # bad, fake token with one population
+LDmatrix(c("r3", "rs4", "rs148890987"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                          # bad query SNP format
+LDmatrix(c("rs0", "rs4", "rs148890987"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                         # bad query SNP format  
+LDmatrix(c("rs0", "rs4"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                                        # bad with good response, used one valid & invalid SNP  
+LDmatrix(c("rs3", "rs4"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                                        # good, with two valid variants
+LDmatrix(c("chr13:32446842", "Rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))              # good, one SNP w/ genomic coordinate
+LDmatrix(c("chr13:32446842", "chr13:32447222", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))   # good, two SNPs w/ genomic coordinate
+LDmatrix(c("ch13:32446842", "chr13:32447222", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))    # bad, first SNP w/ invalid genomic coordinate
+LDmatrix(c("chr13:32446842", "cr13:3244722", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))     # bad, 2nd SNP w/ invalid genomic coordinate
+LDmatrix(c("chr13:32446842", "chr13;3244722", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))    # bad, 2nd SNP w/ invalid genomic coordinate
+LDmatrix(c("chr13:32446842", "chr13:324472", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))     # bad, 2nd SNP w/ invalid genomic coordinate
+LDmatrix(c("chr13:32446842", "chr133:324472", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))    # bad, 2nd SNP w/ invalid genomic coordinate
+
+
+##########################################################################################
+
+LDlinkR::LDpair
+# Funtion call, good and bad examples
+# token=Sys.getenv("LDLINK_TOKEN")
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDpairR/data_saved/capture_text12.txt"
+mytable <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDpairR/data_saved/table12.txt"
+
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "text", file = myfile)                          # good, no warning, w/ text and save file options
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "table", file = mytable)                        # good, no warning, w/ table and save file options
+LDpair("rs3", "rs456", "YRI", Sys.getenv("LDLINK_TOKEN"), "text", file = myfile)                        # good, w/ warning, w/ text and save file options
+LDpair("rs3", "rs456", "YRI", Sys.getenv("LDLINK_TOKEN"), "table", file = mytable)                      # good, w/ warning, w/ table and save file options
+
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "txt", file = mytable)                          # bad, invalid input for "output" option
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "text", file = TRUE)                            # bad, invalid input for "file" option
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "text", file = 1)                               # bad, invalid input for "file" option
+
+LDpair("rs3", "rs456", "YRI", Sys.getenv("LDLINK_TOKEN"), "text")                                       # warning, variants on different chr's
+LDpair("rs3", "rs456", "YRI", Sys.getenv("LDLINK_TOKEN"), "table")                                      # warning, variants on different chr's
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "text")                                         # good, no warning, w/ text option
+LDpair("rs3", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"), "table")                                        # good, no warning, w/ text option
+
+LDpair(var1 = "rs3", var2 = "rs4", pop = "YRI", token = Sys.getenv("LDLINK_TOKEN"))                     # good
+LDpair(var1 = "rs3", var2 = "rr4", pop = "YRI", token = Sys.getenv("LDLINK_TOKEN"))                     # bad, invalid query variant 2
+LDpair(var1 = "r3", var2 = "rs4", pop = "YRI", token = Sys.getenv("LDLINK_TOKEN"))                      # bad, invalid query variant 1
+LDpair("rs3", "rs456", "YRI", Sys.getenv("LDLINK_TOKEN"))                                               # warning, variants on different chr's
+LDpair("rs456", "YRI", Sys.getenv("LDLINK_TOKEN"))                                                      # bad, only 1 variant
+LDpair("chr13:32446842", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"))                                      # good, chr coordinate for variant 1
+LDpair("chr13:32446842", "chr13:32446842", "YRI", Sys.getenv("LDLINK_TOKEN"))                           # good, chr coordinate for both variants
+LDpair("ch13:32446842", "chr13:32447222", "YRI", Sys.getenv("LDLINK_TOKEN"))                            # bad, invalid format for variant 1
+LDpair("chr1332446842", "chr13:32447222", "YRI", Sys.getenv("LDLINK_TOKEN"))                            # bad, invalid format for variant 1
+LDpair("chr13:32446842", "13:32447222", "YRI", Sys.getenv("LDLINK_TOKEN"))                              # bad, invalid format for variant 2
+LDpair("rs3", "rs4", c("YRI", "LWK", "CEU"), Sys.getenv("LDLINK_TOKEN"))                                # good, w/ multiple populations
+LDpair("rs0", "rs4", c("YRI", "LWK", "CEU"), Sys.getenv("LDLINK_TOKEN"))                                # bad, rsID is not in dbSNP
+LDpair(var1 = c("rs3", "rs456"), var2 = "rs4", pop = "YRI", token = Sys.getenv("LDLINK_TOKEN"))         # bad, multiple variants for variant 1
+LDpair(var1 = "rs3", var2 = "Rs4", pop = "YRI", token = Sys.getenv("LDLINK_TOKEN"))                     # good, upper case in rsID
+LDpair("Chr13:32446842", "rs4", "YRI", Sys.getenv("LDLINK_TOKEN"))                                      # good, upper case in chr coordinate
+
+
+##########################################################################################
+
+LDlinkR::LDpop
+# Funtion call, good and bad examples
+# token=Sys.getenv("LDLINK_TOKEN")
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/SNPchipR/data_saved/text1.txt"
+
+LDpop(var1 = "rs3", var2 = "rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"), myfile)                   # good, with save file option
+LDpop(var1 = "rs3", var2 = "rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"), "text6.txt")              # good, with save file option
+
+LDpop(var1 = "rs3", var2 = "rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                           # good
+LDpop(var1 = "Rs3", var2 = "rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                           # good, upper case in var1 rsID
+LDpop(var1 = "rs3", var2 = "Rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                           # good, upper case in var2 rsID
+LDpop(var1 = "s3", var2 = "Rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                            # bad, invalid var2 rsID
+LDpop(var1 = "rs3", var2 = "R4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                            # bad, invalid var2 rsID
+LDpop(var1 = "chr13:32446842", var2 = "chr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))     # good, using chr coordinates
+LDpop(var1 = "rs3", var2 = "chr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                # good, using chr coordinates
+LDpop(var1 = "Chr13:32446842", var2 = "chr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))     # good, upper case var1 chr coordinate
+LDpop(var1 = "Chr13:32446842", var2 = "CHR13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))     # good, upper case for var1 & var2
+LDpop(var1 = "ch13:32446842", var2 = "chr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))      # bad, invalid var1 chr coordinate
+LDpop(var1 = "chr13:32446842", var2 = "cr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))      # bad, invalid var2 chr coordinate
+LDpop(var1 = "rs0", var2 = "rs4", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                           # good, error for var1 is not in dbSNP 151
+LDpop(var1 = "rs3", var2 = "rs456", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))                         # good, 
+pop_out <- LDpop(var1 = "rs3", var2 = "chr13:32446842", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))     # good, using chr coordinates
+LDpop(var1 = "rs72630805", var2 = "rs189192078", pop = "YRI", r2d = "r2", token = Sys.getenv("LDLINK_TOKEN"))            # bad, rsID on chrX
+
+
+##########################################################################################
+
+LDlinkR::LDproxy
+# Funtion call, good and bad examples
+# token=Sys.getenv("LDLINK_TOKEN")
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDproxyR/data_saved/capture_text1.txt"
+
+df_proxy <- LDproxy("rs456", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), myfile)           # good, save file option
+df_proxy <- LDproxy("rs456", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), 2345.txt)         # bad, save file option
+df_proxy <- LDproxy("rs456", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), "capture3.txt")   # good, save file
+
+df_proxy <- LDproxy("rs456", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))             # good
+df_proxy <- LDproxy("rr456", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))             # bad query SNP format
+df_proxy <- LDproxy("rs1", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))               # invalid SNP
+df_proxy <- LDproxy("chr7:24966446", "YRI", token = Sys.getenv("LDLINK_TOKEN"))   # good, uses chromosome coordinate
+df_proxy <- LDproxy("chr7:24966446", "YRI", token = "faketoken")      # fake token
+df_proxy <- LDproxy("ch7:24966446", "YRI", token = Sys.getenv("LDLINK_TOKEN"))    # bad query SNP format
+df_proxy <- LDproxy("chr7:24966446", "YRI")                           # missing token
+df_proxy <- LDproxy("rs345", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))             # good
+df_proxy <- LDproxy("rs7837688", "MXL", "d", Sys.getenv("LDLINK_TOKEN"))          # good, using 'MXL' and 'd'
+df_proxy <- LDproxy("rs456", "YRI", "r2")                             # missing token
+df_proxy <- LDproxy("rs456", c("YRI", "MXL"), "r2", Sys.getenv("LDLINK_TOKEN"))   # good, using multiple populations
+df_proxy <- LDproxy("rs456", c("YRI", "TIM"), "r2", Sys.getenv("LDLINK_TOKEN"))   # bad population in multiple populations
+df_proxy <- LDproxy("Chr7:24966446", "YRI", token = Sys.getenv("LDLINK_TOKEN"))   # good, uses chromosome coordinate, with upper case
+df_proxy <- LDproxy("chr7;24966446", "YRI", token = Sys.getenv("LDLINK_TOKEN"))   # bad, uses chromosome coordinate with semi-colon
+df_proxy <- LDproxy("456rs", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))             # bad query SNP format
+df_proxy <- LDproxy("rs75837874", "EUR", "r2", Sys.getenv("LDLINK_TOKEN"))        # NOT BIALLELIC in EUR population, error message
+
+
+# Batch call
+snps.to.upload <- c("rs123", "rs456", "rs7837688")
+  for(i in 1:length(snps.to.upload)) {
+    myfile <- paste(snps.to.upload[i], ".txt", sep="")
+    df_proxy <- LDproxy(snp=snps.to.upload[i], "YRI", "r2", Sys.getenv("LDLINK_TOKEN"), myfile)
+    # write.table(df_proxy, file = file, quote = F, row.names = F, sep = "\t")
+  }
+
+
+##########################################################################################
+
+LDlinkR::SNPchip
+# Funtion call, good and bad examples
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/SNPchipR/data_saved/table5.txt"
+
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"), myfile)                       # good, w/ save file option
+
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))                               # good
+snpchip("rs3", "ALL", Sys.getenv("LDLINK_TOKEN"))                                                        # good, only one SNP provided
+snpchip(c("rs3", "rs4", "rs148890987"), c("A_CHB2", "A_SNP5.0"), Sys.getenv("LDLINK_TOKEN"))             # good, multiple multiple chip codes
+snpchip(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "faketoken")                        # bad, fake token with multiple populations
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL", "faketoken")                                  # bad, fake token with one population
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL")                                               # bad, fake token with one population
+snpchip(c("r3", "rs4", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))                                # bad query SNP format
+snpchip(c("rs0", "rs4", "rs148890987"), "XYZ", Sys.getenv("LDLINK_TOKEN"))                               # bad chip code  
+snpchip(c("rs0", "rs4"), "ALL", Sys.getenv("LDLINK_TOKEN"))                                              # bad with good response, used one valid & invalid SNP  
+snpchip(c("rs3", "rs4"), "A_SNP6.0", Sys.getenv("LDLINK_TOKEN"))                                         # good, with two valid variants
+snpchip(c("chr13:32446842", "Rs4", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))                    # good, one SNP w/ genomic coordinate
+snpchip(c("chr13:32446842", "chr13:32447222", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))         # good, two SNPs w/ genomic coordinate
+snpchip(c("ch13:32446842", "chr13:32447222", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))          # bad, first SNP w/ invalid genomic coordinate
+snpchip(c("chr13:32446842", "cr13:3244722", "rs148890987"), "ALL", Sys.getenv("LDLINK_TOKEN"))           # bad, 2nd SNP w/ invalid genomic coordinate
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL_Illumina", Sys.getenv("LDLINK_TOKEN"))                      # good, w/ ALL_Illumina, no arrays found
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL_Illumina", Sys.getenv("LDLINK_TOKEN"), myfile)              # good, w/ ALL_Illumina, no arrays found
+snpchip(c("rs3", "rs4", "rs148890987"), "ALL_Affy", Sys.getenv("LDLINK_TOKEN"))                          # good, w/ ALL_Affy
+snp_table <- snpchip(c("rs3", "rs4", "rs355"), "ALL", Sys.getenv("LDLINK_TOKEN"))                        # good
+snpchip(c("rs4", "rs355"), "ALL", Sys.getenv("LDLINK_TOKEN"))                                            # good
+snpchip(c("rs3", "rs4", "rs355"), "ALL", Sys.getenv("LDLINK_TOKEN"))                                     # good
+snpchip(c("rs3", "rs4", "rs355", "rs2314396"), "ALL", Sys.getenv("LDLINK_TOKEN"))                        # good
+snpchip(c("rs3", "rs4", "rs355", "rs148890987", "rs2314396"), "ALL", Sys.getenv("LDLINK_TOKEN"))         # good
+
+
+##########################################################################################
+
+LDlinkR::SNPclip
+
+# Funtion call, good and bad examples
+myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/SNPclipR/data_saved/text2.txt"
+
+snpclip(c("rs3", "rs4", "rs148890987"), "YRI", "0.1", "0.01", Sys.getenv("LDLINK_TOKEN"), myfile)         # good, w/ save file option
+snpclip(c("rs3", "rs4", "rs148890987"), "YRI", "0.1", "0.01", Sys.getenv("LDLINK_TOKEN"))                 # good
+snpclip(c("chr13:32446842", "Rs4", "rs148890987"), "YRI", "0.1", "0.01", Sys.getenv("LDLINK_TOKEN"))      # good, one SNP w/ genomic coordinate
+snpclip(c("ch13:32446842", "Rs4", "rs148890987"), "YRI", "0.1", "0.01", Sys.getenv("LDLINK_TOKEN"))       # good, one SNP w/ genomic coordinate
+snpclip(c("chr13:32446842", "Rs4", "rs148890987"), "YRI", token = Sys.getenv("LDLINK_TOKEN"))             # good, one SNP w/ genomic coordinate, no thresholds
+snpclip(c("rs3", "rs4", "rs148890987"), "YRI", 0.1, "0.01", Sys.getenv("LDLINK_TOKEN"))                   # bad, r2_theshold is numeric
+snpclip(c("rs3", "rs4", "rs148890987"), "YRI", "0.1", 0.01, Sys.getenv("LDLINK_TOKEN"))                   # good, maf_theshold is numeric
+
+##########################################################################################
+
+LDexpress(snps = "rs4",                                                                       # good, does not save to file
+  pop = c("YRI", "CEU"),
+  tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+  )
+  
+  
+LDexpress(snps = "rs4",                                                                       # good, w/ save file option 
+          pop = c("YRI", "CEU"),
+          tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+          r2d = "r2",
+          r2d_threshold = "0.1",
+          p_threshold = "0.1",
+          win_size = "500000",
+          token = Sys.getenv("LDLINK_TOKEN"),
+          file = "/Users/myersta/Box/Rprojects/test5_ldexpress.txt"
+)
+  
+
+LDexpress(snps = c("rs345", "rs75837874", "rs456"),                                            # good & bad, rs75837874 is not biallelic
+          pop = c("YRI", "CEU"),
+          tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+          r2d = "r2",
+          r2d_threshold = "0.1",
+          p_threshold = "0.1",
+          win_size = "500000",
+          token = Sys.getenv("LDLINK_TOKEN"),
+          file = "/Users/myersta/Box/Rprojects/test7_ldepress.txt"
+)
+
+
+LDexpress(snps = c("rs345", "rs0", "rs456"),                                                   # bad, rs0 is not found in db151
+          pop = c("YRI", "CEU"),
+          tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+          r2d = "r2",
+          r2d_threshold = "0.1",
+          p_threshold = "0.1",
+          win_size = "500000",
+          token = Sys.getenv("LDLINK_TOKEN"),
+          file = "/Users/myersta/Box/Rprojects/test7_ldepress.txt"
+)
+
+
+LDexpress(snps = "rs4",                                                                        # good, tissue is "ALL"
+          pop = c("YRI", "CEU"),
+          tissue =  "ALL",
+          r2d = "r2",
+          r2d_threshold = "0.1",
+          p_threshold = "0.1",
+          win_size = "500000",
+          token = Sys.getenv("LDLINK_TOKEN")
+)
+
+LDexpress(snps = "rs4",                                                                        # bad, r2d_threshold is outside acceptable range
+  pop = c("YRI", "CEU"),
+  tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+  r2d = "r2",
+  r2d_threshold = "2",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDexpress(snps = "rs4",            					                                           # bad, p_threshold outside acceptable range
+  pop = c("YRI", "CEU"),
+  tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "2",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDexpress(snps = "rs4",                                                                        # bad, win_size outside acceptable range
+  pop = c("YRI", "CEU"),
+  tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "1000001",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDexpress(snps = "rs4",                                                                        # good, with population set to "ALL"
+  pop = "ALL",
+  tissue =  c("ADI_SUB", "ADI_VIS_OME"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+)
+
+LDexpress(snps = "rs4",                                                                       # good, tissue argument mixed type
+          pop = c("YRI", "CEU"),
+          tissue =  c("ADI_VIS_OME", "Adipose_Subcutaneous"),
+          r2d = "r2",
+          r2d_threshold = "0.1",
+          p_threshold = "0.1",
+          win_size = "500000",
+          token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDexpress(snps = "rs4",                                                                       # good, tissue argument format mixed type
+  pop = c("YRI", "CEU"),                                                                      # & tissue types are duplicates
+  tissue =  c("ADI_SUB", "Adipose_Subcutaneous"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+  )
+  
+  
+LDexpress(snps = "rs4",                                                                     # good, duplicate tissue types, all tissue types use full format
+  pop = c("YRI", "CEU"),
+  tissue =  c("Adipose_Subcutaneous", "Adipose_Subcutaneous", "Bladder"),
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+  )
+  
+  
+  LDexpress(snps = "rs4",                                                                      
+  pop = c("YRI", "CEU"),
+  tissue =  "Cells_EBV_transformed_lymphocytes",
+  r2d = "r2",
+  r2d_threshold = "0.1",
+  p_threshold = "0.1",
+  win_size = "500000",
+  token = Sys.getenv("LDLINK_TOKEN")
+  )
+  
+  #########################################################################################
+  
+LDtrait(snps = "rs456",                                                                       # good, does not save to file
+        pop = c("YRI", "CEU"),
+        r2d = "r2",
+        r2d_threshold = "0.1",
+        win_size = "500000",
+        token = Sys.getenv("LDLINK_TOKEN")
+)
+
+LDtrait(snps = "rs0",                                                                       # bad, rsID not in dbSNP 151
+        pop = c("YRI", "CEU"),
+        token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDtrait(snps = "rs456",                                                                       # good, does not save to file
+        pop = c("YRI", "CEU"),
+        token = Sys.getenv("LDLINK_TOKEN")
+)
+
+
+LDtrait(snps = "rs456",                                                                       # good, does not save to file
+        pop = c("YRI", "CEU"),
+        win_size = "750000",
+        token = Sys.getenv("LDLINK_TOKEN")
+)
