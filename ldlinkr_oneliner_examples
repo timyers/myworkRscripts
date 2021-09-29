@@ -1,6 +1,7 @@
 LDlinkR::LDhap
 # Funtion call examples
 myfile <- "/Volumes/ifs/DCEG/Branches/LTG/Chanock/Tim/LDlinkR/LDhapR/data_saved/capture_text1.txt"
+Sys.getenv("LDLINK_TOKEN") <- "mytoken123".                                                     # obtain token from https://ldlink.nci.nih.gov/?tab=apiaccess
 
 LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"), myfile)                  # good, save file
 LDhap(c("rs3", "rs4", "rs148890987"), "CEU", Sys.getenv("LDLINK_TOKEN"), 2345.txt)                # bad, file option rejected by R
