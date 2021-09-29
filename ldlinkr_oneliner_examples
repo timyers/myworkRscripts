@@ -23,6 +23,8 @@ LDhap(c("rs3", "rs4", "rs148890987"), "CEU", table_type="variant", Sys.getenv("L
 LDhap(c("rs3", "rs4"), "CEU", "haplo", Sys.getenv("LDLINK_TOKEN"))                                # good, two variants with haplo arg
 LDhap(c("rs3", "rs4"), "CEU", "variant", Sys.getenv("LDLINK_TOKEN"))                              # good, two variants with variant arg
 
+LDhap("rs3", "YRI", "haplo", Sys.getenv("LDLINK_TOKEN"))                                          # good, one query variant only
+
 ##########################################################################################
 
 LDlinkR::LDmatrix
