@@ -1,4 +1,4 @@
-token <- "28da99809470"
+token <- " "
 snps <- c("rs3", "rs4", "rs148890987")
 pop <- "CEU"
 
@@ -85,7 +85,7 @@ df_merge <- function(data_out, table_type) {
 #' \dontrun{LDhap(c("rs3", "rs4", "rs148890987"), "CEU", token = Sys.getenv("LDLINK_TOKEN"))}
 #' \dontrun{LDhap("rs148890987", c("YRI", "CEU"), token = Sys.getenv("LDLINK_TOKEN"))}
 #'
-LDhap <- function(snps, pop="CEU", table_type="haplotype", token=NULL, file = FALSE) {
+LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haplotype") {
   
   
   LD_config <- list(ldhap.url="https://ldlink.nci.nih.gov/LDlinkRest/ldhap",
@@ -185,7 +185,7 @@ LDhap <- function(snps, pop="CEU", table_type="haplotype", token=NULL, file = FA
     return(data_out_merge)
   } else if (is.character(file)) {
     write.table(data_out_merge, file = file, quote = F, row.names = F, sep = "\t")
-    cat(paste("\nFile saved to ",file,".", sep=""))
+    cat(paste("\nFile saved to ",file,".\n\n", sep=""))
     return(data_out_merge)
   }
   
