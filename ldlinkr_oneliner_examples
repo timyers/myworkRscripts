@@ -36,8 +36,8 @@ LDmatrix(c("rs3", "rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN")
 LDmatrix(c("rs3", "rs4", "rs148890987"), "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))                         # good
 LDmatrix("rs3", "YRI", "r2", Sys.getenv("LDLINK_TOKEN"))                                                  # bad, only one SNP provided
 LDmatrix(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "r2", Sys.getenv("LDLINK_TOKEN"))               # good, multiple populations
-LDmatrix(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "r2", "faketoken")                  # bad, fake token with multiple populations
-LDmatrix(c("rs3", "rs4", "rs148890987"), "CEU", "r2", "faketoken")                            # bad, fake token with one population
+LDmatrix(c("rs3", "rs4", "rs148890987"), c("YRI", "CEU"), "r2", "faketoken")                              # bad, fake token with multiple populations
+LDmatrix(c("rs3", "rs4", "rs148890987"), "CEU", "r2", "faketoken")                                        # bad, fake token with one population
 LDmatrix(c("r3", "rs4", "rs148890987"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                          # bad query SNP format
 LDmatrix(c("rs0", "rs4", "rs148890987"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                         # bad query SNP format  
 LDmatrix(c("rs0", "rs4"), "CEU", "r2", Sys.getenv("LDLINK_TOKEN"))                                        # bad with good response, used one valid & invalid SNP  
