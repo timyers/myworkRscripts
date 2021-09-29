@@ -15,3 +15,4 @@ rownames(df_all) <- c()
 
 # change column names
 names(df_all)[4:ncol(df_all)] <- "Haplotype"
+names(df_all)[5:ncol(df_all)] <- "      "
