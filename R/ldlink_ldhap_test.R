@@ -132,7 +132,7 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
                                 "CDX","KHV","CEU","TSI","FIN","GBR","IBS",
                                 "GIH","PJL","BEB","STU","ITU",
                                 "ALL", "AFR", "AMR", "EAS", "EUR", "SAS"),
-             avail_table_type=c("haplotype", "variant", "both", "fusion")
+             avail_table_type=c("haplotype", "variant", "both", "merged")
   )
   
   
