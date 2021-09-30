@@ -90,13 +90,13 @@ df_merge <- function(data_out, table_type) {
       df3 <- cbind(df2, df1)
       
       # row bind new data frame, df3, to df_all
-      data_out_fusion <- data.frame(mapply(c, df_all, df3))
+      data_out_merged <- data.frame(mapply(c, df_all, df3))
       
       # change column names
-      names(data_out_fusion)[5:ncol(data_out_fusion)] <- "  "
+      names(data_out_merged)[5:ncol(data_out_merged)] <- "  "
       
       # return data
-      return(data_out_fusion)
+      return(data_out_merged)
    # End else if  
    }
   
