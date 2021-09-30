@@ -28,12 +28,11 @@ rownames(df_all) <- c()
 
 # change column names
 names(df_all)[4] <- "Haplotypes"
-# names(df_all)[5:ncol(df_all)] <- " "
 
 # create new data frame with Count & Frequency
 df3 <- df_hap_transpose[(num_of_snps+1):nrow(df_hap_transpose),]
 # change row names to "Haplotype_Count" & "Haplotype Frequency"
-###### Insert code here ######
+df3$`rownames(df3)` <- c("Haplotype_Count", "Hapolotype_Frequency")
 # Convert row names into first column
 df3 <- cbind(rownames(df3), data.frame(df3, row.names=NULL))
 
