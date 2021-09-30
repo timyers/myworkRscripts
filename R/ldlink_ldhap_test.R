@@ -1,6 +1,9 @@
 token <- " "
-snps <- c("rs3", "rs4", "rs148890987")
+# snps <- c("rs3", "rs4", "rs148890987")
+snps <- c("rs148890987", "rs3", "rs4", "rs372", "rs375", "rs378", "rs380", "rs382")
+# snps <- "rs3"
 pop <- "CEU"
+# pop <- "YRI"
 
 # type of file download
 table_type <- "variant"
@@ -20,9 +23,9 @@ df_merge <- function(data_out, table_type) {
   }
   num_of_snps <- i-1
   
-  ### split data_out into two, then create new data.frame from pieces of both ###
+  ### split data_out into two, then create new data.frames from pieces of these two ###
   # 1
-  data_out1 <- data_out[1:num_of_snps,]                                            # create first of new data frames
+  data_out_var <- data_out[1:num_of_snps,]                                         # create first of new data frames
   
   # 2
   data_out2 <- data_out[(num_of_snps+2):nrow(data_out),]                           # create second of new data frames
@@ -31,36 +34,71 @@ df_merge <- function(data_out, table_type) {
   
   # 3
   if (num_of_snps == 1) {                                                          # when num_of_snps = 1, no need to split column by delimiter
-    data_out_merge <- data_out2                                                    # for consistency
-    names(data_out_merge)[1] <- as.character(unlist(data_out1$RS_Number))          # change column name to match RS_number from data_out1
-    rownames(data_out_merge) <- NULL                                               # Remove row names
-    # return(data_out_merge)
+    data_out_hap <- data_out2                                                      # for consistency only
+    names(data_out_hap)[1] <- as.character(unlist(data_out_var$RS_Number))         # change column name to match RS_number from data_out_var
+    rownames(data_out_hap) <- NULL                                                 # Remove row names
+    # return(data_out_hap)
     
   } else if (num_of_snps > 1) {
     tmp <- strsplit(as.character(data_out2$Haplotype),'_')                              # split first column by delimiter '_', creates a list
-    data_out_merge <- with(data_out2, data.frame(t(sapply(tmp, `[`))))                  # create new data.frame, sapply()'s results need to be transposed
-    data_out_merge <- cbind(data_out_merge, data_out2[,2:3])                            # combine columns #2 & 3 from data_out w/ data_out_merge
-    names(data_out_merge)[1:num_of_snps] <- as.character(unlist(data_out1$RS_Number))   # change column names to match RS_numbers from data_out1
-    rownames(data_out_merge) <- NULL                                                    # Remove row names
-    # return(data_out_merge)
+    data_out_hap <- with(data_out2, data.frame(t(sapply(tmp, `[`))))                    # create new data.frame, sapply()'s results need to be transposed
+    data_out_hap <- cbind(data_out_hap, data_out2[,2:3])                                # combine columns #2 & 3 from data_out w/ data_out_hap
+    names(data_out_hap)[1:num_of_snps] <- as.character(unlist(data_out_var$RS_Number))  # change column names to match RS_numbers from data_out_var
+    rownames(data_out_hap) <- NULL                                                      # Remove row names
+    # return(data_out_hap)
   }
  
-  # Before eval 'table_type' arg, change column names of data_out1
-  colnames(data_out1)[colnames(data_out1) %in% 
+  # Before eval 'table_type' arg, change column names of data_out_var
+  colnames(data_out_var)[colnames(data_out_var) %in% 
                         c("Position..hg19.", "Allele.Frequency")] <- 
                         c("Position_hg19", "Allele_Frequency")
   
-  # when table_type is set to "variant"
+  # Evaluate 'table_type' parameter
   if (table_type == "variant") {
-    return(data_out1)
+      return(data_out_var)
   } else if (table_type == "haplotype") { 
-    return(data_out_merge)
-  } else if ( table_type == "both") {
-    # combine data_out1 and data_out_merge into a list
-    data_out_both <- list(data_out1, data_out_merge)
-    return(data_out_both)
-  }
-  
+      return(data_out_hap)
+  } else if (table_type == "both") {
+      # combine data_out_var and data_out_hap into a list
+      data_out_both <- list(data_out_var, data_out_hap)
+      return(data_out_both)
+  } else if (table_type == "fusion") {
+      # transpose data.frame
+      data_out_hap_t <- as.data.frame(t(as.matrix(data_out_hap)))
+      
+      # combine haplotypes from data_out_hap_t
+      df_all <- cbind(data_out_var, data_out_hap_t[c(1:num_of_snps),c(1:ncol(data_out_hap_t))])
+      
+      # remove extra rownames
+      # rownames(df_all) <- c()
+      
+      # change column names
+      names(df_all)[4] <- "Haplotypes"
+      
+      # create new data.frame that includes Count & Frequency
+      df1 <- data_out_hap_t[(num_of_snps+1):nrow(data_out_hap_t),]
+      # change row names to "Haplotype_Count" & "Haplotype Frequency"
+      rownames(df1)[rownames(df1) %in% 
+                            c("Count", "Frequency")] <- 
+                            c("Haplotype_Count", "Haplotype_Frequency")
+      # Convert row names into first column
+      df1 <- cbind(rownames(df1), data.frame(df1, row.names=NULL))
+      
+      # create empty data.frame
+      df2 <- data.frame(matrix("   ", nrow = 2, ncol = 2))
+      # combine df1 & df2
+      df3 <- cbind(df2, df1)
+      
+      # row bind new data frame, df3, to df_all
+      data_out_fusion <- data.frame(mapply(c, df_all, df3))
+      
+      # change column names
+      names(data_out_fusion)[5:ncol(data_out_fusion)] <- "  "
+      
+      # return data
+      return(data_out_fusion)
+   # End else if  
+   }
   
 # End bracket  
 }
@@ -94,7 +132,7 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
                                 "CDX","KHV","CEU","TSI","FIN","GBR","IBS",
                                 "GIH","PJL","BEB","STU","ITU",
                                 "ALL", "AFR", "AMR", "EAS", "EUR", "SAS"),
-             avail_table_type=c("haplotype", "variant", "both")
+             avail_table_type=c("haplotype", "variant", "both", "fusion")
   )
   
   
@@ -178,15 +216,15 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
   }
   
   # Call function to create a new data.frame by merging data returned from the LDlink web site
-  data_out_merge <- df_merge(data_out, table_type)
+  data_out_hap <- df_merge(data_out, table_type)
   
   # Evaluate 'file' option
   if (file == FALSE) {
-    return(data_out_merge)
+    return(data_out_hap)
   } else if (is.character(file)) {
-    write.table(data_out_merge, file = file, quote = F, row.names = F, sep = "\t")
+    write.table(data_out_hap, file = file, quote = F, row.names = F, sep = "\t")
     cat(paste("\nFile saved to ",file,".\n\n", sep=""))
-    return(data_out_merge)
+    return(data_out_hap)
   }
   
 }
