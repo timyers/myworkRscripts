@@ -1,0 +1,2 @@
+RS_Number	Position_hg19	Allele_Frequency
+rs3	chr13:32446842	C=0.829, T=0.171

@@ -1,0 +1,7 @@
+rs148890987	rs3	rs4	rs372	rs375	rs378	rs380	rs382	Count	Frequency
+C	C	A	A	C	C	G	C	101	0.5101
+C	C	A	A	C	C	G	T	75	0.3788
+T	T	G	G	T	G	A	T	11	0.0556
+T	C	A	A	C	C	G	C	6	0.0303
+C	T	G	G	T	G	A	T	4	0.0202
+T	C	A	A	C	C	G	T	1	0.0051

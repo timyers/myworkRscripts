@@ -1,0 +1,5 @@
+rs148890987	rs3	rs4	Count	Frequency
+C	C	A	176	0.8889
+T	T	G	11	0.0556
+T	C	A	7	0.0354
+C	T	G	4	0.0202
