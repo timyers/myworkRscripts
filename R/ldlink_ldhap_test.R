@@ -1,20 +1,34 @@
 token <- " "
 # snps <- c("rs3", "rs4", "rs148890987")
 snps <- c("rs148890987", "rs3", "rs4", "rs372", "rs375", "rs378", "rs380", "rs382")
-# snps <- "rs3"
+snps <- c("rs3", "rs4", "rs346", "rs496202", "rs495325", "rs150920736", "rs639064", "rs35134009")
+# 30 snps
+snps <- c("rs3", "rs4", "rs346", "rs496202", "rs495325", "rs150920736", "rs639064", "rs35134009",
+          "rs349", "rs635759", "rs622702", "rs623441", "rs623009", "rs10586862", "rs7335517", "rs353",
+          "rs354", "rs9594490", "rs660670", "rs556780", "rs355", "rs356", "rs542746", "rs358", "rs2314396",
+          "rs361", "rs203408", "rs372", "rs375", "rs116799125"
+          )
+# 31 snps - over the max
+snps <- c("rs3", "rs4", "rs346", "rs496202", "rs495325", "rs150920736", "rs639064", "rs35134009",
+          "rs349", "rs635759", "rs622702", "rs623441", "rs623009", "rs10586862", "rs7335517", "rs353",
+          "rs354", "rs9594490", "rs660670", "rs556780", "rs355", "rs356", "rs542746", "rs358", "rs2314396",
+          "rs361", "rs203408", "rs372", "rs375", "rs116799125", "rs201578600"
+          )
+snps <- "rs3"
 pop <- "CEU"
-# pop <- "YRI"
+pop <- "YRI"
 
 # type of file download
 table_type <- "variant"
-# table_type <- "haplotype"
-# table_type <- "both"
+table_type <- "haplotype"
+table_type <- "both"
+table_type <- "merged"
 
 # LDlinkR::LDhap
 
 ########### Secondary Function:  Called by primary function LDhap ##########
 df_merge <- function(data_out, table_type) {
-  
+
   ### Count the number of snps listed in data_out ###
   for (i in 1:dim(data_out)[1]) {
     if (substr(data_out[i,], 1, 1)[1]=="#") {
@@ -22,23 +36,23 @@ df_merge <- function(data_out, table_type) {
     }
   }
   num_of_snps <- i-1
-  
+
   ### split data_out into two, then create new data.frames from pieces of these two ###
   # 1
   data_out_var <- data_out[1:num_of_snps,]                                         # create first of new data frames
-  
+
   # 2
   data_out2 <- data_out[(num_of_snps+2):nrow(data_out),]                           # create second of new data frames
   colnames(data_out2) <- as.character(unlist(data_out2[1,]))                       # assign first row as new column names
   data_out2 <- data_out2[-1,]                                                      # remove first row, no longer needed
-  
+
   # 3
   if (num_of_snps == 1) {                                                          # when num_of_snps = 1, no need to split column by delimiter
     data_out_hap <- data_out2                                                      # for consistency only
     names(data_out_hap)[1] <- as.character(unlist(data_out_var$RS_Number))         # change column name to match RS_number from data_out_var
     rownames(data_out_hap) <- NULL                                                 # Remove row names
     # return(data_out_hap)
-    
+
   } else if (num_of_snps > 1) {
     tmp <- strsplit(as.character(data_out2$Haplotype),'_')                              # split first column by delimiter '_', creates a list
     data_out_hap <- with(data_out2, data.frame(t(sapply(tmp, `[`))))                    # create new data.frame, sapply()'s results need to be transposed
@@ -47,60 +61,60 @@ df_merge <- function(data_out, table_type) {
     rownames(data_out_hap) <- NULL                                                      # Remove row names
     # return(data_out_hap)
   }
- 
+
   # Before eval 'table_type' arg, change column names of data_out_var
-  colnames(data_out_var)[colnames(data_out_var) %in% 
-                        c("Position..hg19.", "Allele.Frequency")] <- 
+  colnames(data_out_var)[colnames(data_out_var) %in%
+                        c("Position..hg19.", "Allele.Frequency")] <-
                         c("Position_hg19", "Allele_Frequency")
-  
+
   # Evaluate 'table_type' parameter
   if (table_type == "variant") {
       return(data_out_var)
-  } else if (table_type == "haplotype") { 
+  } else if (table_type == "haplotype") {
       return(data_out_hap)
   } else if (table_type == "both") {
       # combine data_out_var and data_out_hap into a list
       data_out_both <- list(data_out_var, data_out_hap)
       return(data_out_both)
-  } else if (table_type == "fusion") {
+  } else if (table_type == "merged") {
       # transpose data.frame
       data_out_hap_t <- as.data.frame(t(as.matrix(data_out_hap)))
-      
+
       # combine haplotypes from data_out_hap_t
       df_all <- cbind(data_out_var, data_out_hap_t[c(1:num_of_snps),c(1:ncol(data_out_hap_t))])
-      
+
       # remove extra rownames
       # rownames(df_all) <- c()
-      
+
       # change column names
       names(df_all)[4] <- "Haplotypes"
-      
+
       # create new data.frame that includes Count & Frequency
       df1 <- data_out_hap_t[(num_of_snps+1):nrow(data_out_hap_t),]
       # change row names to "Haplotype_Count" & "Haplotype Frequency"
-      rownames(df1)[rownames(df1) %in% 
-                            c("Count", "Frequency")] <- 
+      rownames(df1)[rownames(df1) %in%
+                            c("Count", "Frequency")] <-
                             c("Haplotype_Count", "Haplotype_Frequency")
       # Convert row names into first column
       df1 <- cbind(rownames(df1), data.frame(df1, row.names=NULL))
-      
+
       # create empty data.frame
       df2 <- data.frame(matrix("   ", nrow = 2, ncol = 2))
       # combine df1 & df2
       df3 <- cbind(df2, df1)
-      
+
       # row bind new data frame, df3, to df_all
       data_out_merged <- data.frame(mapply(c, df_all, df3))
-      
+
       # change column names
       names(data_out_merged)[5:ncol(data_out_merged)] <- "  "
-      
+
       # return data
       return(data_out_merged)
-   # End else if  
+   # End else if
    }
-  
-# End bracket  
+
+# End bracket
 }
 ############################## End Sec. Function ##############################
 
@@ -124,8 +138,8 @@ df_merge <- function(data_out, table_type) {
 #' \dontrun{LDhap("rs148890987", c("YRI", "CEU"), token = Sys.getenv("LDLINK_TOKEN"))}
 #'
 LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haplotype") {
-  
-  
+
+
   LD_config <- list(ldhap.url="https://ldlink.nci.nih.gov/LDlinkRest/ldhap",
                     avail_pop=c("YRI","LWK","GWD","MSL","ESN","ASW","ACB",
                                 "MXL","PUR","CLM","PEL","CHB","JPT","CHS",
@@ -134,67 +148,67 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
                                 "ALL", "AFR", "AMR", "EAS", "EUR", "SAS"),
              avail_table_type=c("haplotype", "variant", "both", "merged")
   )
-  
-  
+
+
   url <- LD_config[["ldhap.url"]]
   avail_pop <- LD_config[["avail_pop"]]
   avail_table_type <- LD_config[["avail_table_type"]]
-  
+
   # ensure file option is a character string
   file <- as.character(file)
-  
+
   # Define regular expressions used to check arguments for valid input below
   rsid_pattern <- "^rs\\d{1,}"
   # Syntax               Description
   # ^rs                  rsid starts with 'rs'
   # \\d{1,}              followed by 1 or more digits
-  
+
   chr_coord_pattern <- "(^chr)(\\d{1,2}|X|x|Y|y):(\\d{1,9})$"
   # Syntax               Description
   # (^chr)               chromosome coordinate starts with 'chr'
   # (\\d{1,2}|X|x|Y|y)   followed by one or two digits, 'X', 'x', 'Y', 'y', to designate chromosome
   # :                    followed by a colon
   # (\\d{1,9})$          followed by 1 to 9 digits only to the end of string
-  
-  
+
+
   # Checking arguments for valid input
-  if(!(length(snps) >= 1) & (length(snps) <= 30)) {
+  if(!(length(snps) >= 1 & length(snps) <= 30)) {
     stop("Input is between 1 to 30 variants only.")
   }
-  
+
   for(i in 1:length(snps)) {
     if(!((grepl(rsid_pattern, snps[i], ignore.case = TRUE)) | (grepl(chr_coord_pattern, snps[i], ignore.case = TRUE))))  {
       stop(paste("Invalid query format for variant: ",snps[i], ".", sep=""))
     }
   }
-  
+
   if(!(all(pop %in% avail_pop))) {
     stop("Not a valid population code.")
   }
-  
+
   if(length(pop) > 1) {
     pop=paste(unlist(pop), collapse = "%2B")
   }
-  
+
  if(!(all(table_type %in% avail_table_type))) {
     stop("Not a valid option for table_type.")
   }
-  
-  
+
+
   if(is.null(token)) {
     stop("Enter valid access token. Please register using the LDlink API Access tab: https://ldlink.nci.nih.gov/?tab=apiaccess")
   }
-  
-  
+
+
   # Request body
   snps_to_upload <- paste(unlist(snps), collapse = "%0A")
   body <- list(paste("snps=", snps_to_upload, sep=""),
                paste("pop=", pop, sep=""),
                paste("token=", token, sep=""))
-  
+
   # URL query string
   url_str <- paste(url, "?", paste(unlist(body), collapse = "&"), sep="")
-  
+
   # before 'GET command', check if LDlink server is up and accessible...
   # if server is down pkg should fail gracefully with informative message (not error)
   if (httr::http_error(url)) { # if server is down use message (and not an error)
@@ -203,21 +217,23 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
   } else { # network is up then proceed
     message("\nLDlink server is working...\n")
   }
-  
+
   # GET command, request to the web server
   raw_out <- httr::GET(url=url_str)
   httr::stop_for_status(raw_out)
   # Parse response object, raw_out
   data_out <- read.delim(textConnection(httr::content(raw_out, "text", encoding = "UTF-8")), header=T, as.is = T, sep="\t")
-  
+
   # Check for error in response data
-  if(grepl("error", data_out[2,1])) {
+  if(grepl("error", data_out[1,1])) {
+    stop(data_out[1,1])
+  } else if (grepl("error", data_out[2,1])) {
     stop(data_out[2,1])
   }
-  
+
   # Call function to create a new data.frame by merging data returned from the LDlink web site
   data_out_hap <- df_merge(data_out, table_type)
-  
+
   # Evaluate 'file' option
   if (file == FALSE) {
     return(data_out_hap)
@@ -226,6 +242,6 @@ LDhap <- function(snps, pop="CEU", token=NULL, file = FALSE, table_type="haploty
     cat(paste("\nFile saved to ",file,".\n\n", sep=""))
     return(data_out_hap)
   }
-  
+
 }
 ############################## End Function ##############################
